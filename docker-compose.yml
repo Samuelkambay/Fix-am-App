@@ -1,0 +1,33 @@
+# Local stack: Postgres + API. Web and mobile apps run with their own dev servers (see their READMEs).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fixam
+      POSTGRES_PASSWORD: fixam
+      POSTGRES_DB: fixam
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fixam"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      NODE_ENV: development # keeps dev OTP codes visible; use production + real secrets when deploying
+      DATABASE_URL: postgres://fixam:fixam@db:5432/fixam
+      JWT_SECRET: change-me
+      PAYMENT_MODE: sandbox
+      PUBLIC_BASE_URL: http://localhost:4000
+    # Seeds Sierra Leone reference data + demo accounts on first start (skipped once seeded).
+    command: sh -c "node dist/db/seed.js && node dist/server.js"
+    ports: ["4000:4000"]
+    volumes: [uploads:/app/uploads]
+
+volumes:
+  pgdata:
+  uploads:

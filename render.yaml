@@ -1,0 +1,92 @@
+# Render Blueprint: one click creates the database, the API and both websites.
+# Dashboard → New → Blueprint → pick this repo. Renaming services changes their URLs; update the VITE_API_URL values to match.
+databases:
+  - name: fixam-db
+    plan: free
+    databaseName: fixam
+    user: fixam
+
+services:
+  - type: web
+    name: fixam-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /api/v1/health
+    # Seeds Sierra Leone reference data + demo accounts on first boot (skipped once seeded).
+    dockerCommand: sh -c "node dist/db/seed.js && node dist/server.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase: { name: fixam-db, property: connectionString }
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PAYMENT_MODE
+        value: sandbox
+      - key: PAYMENT_WEBHOOK_SECRET_SANDBOX
+        generateValue: true
+      # Public demo: show login codes on screen because no SMS gateway is connected. Remove for a real launch.
+      - key: EXPOSE_DEV_OTP
+        value: "true"
+      - key: USSD_SHARED_SECRET
+        generateValue: true
+      - key: PUBLIC_BASE_URL
+        value: https://fixam-api.onrender.com
+
+  - type: web
+    name: fixam-customer
+    runtime: static
+    rootDir: customer-web
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://fixam-api.onrender.com/api/v1
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  - type: web
+    name: fixam-panels
+    runtime: static
+    rootDir: web
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://fixam-api.onrender.com/api/v1
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Browser builds of the two mobile apps (Expo web), so they can be tried without installing anything.
+  - type: web
+    name: fixam-app
+    runtime: static
+    rootDir: mobile
+    buildCommand: npm ci && npm run export:web -w @fixam/customer
+    staticPublishPath: apps/customer/dist
+    envVars:
+      - key: EXPO_PUBLIC_API_URL
+        value: https://fixam-api.onrender.com/api/v1
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  - type: web
+    name: fixam-pro
+    runtime: static
+    rootDir: mobile
+    buildCommand: npm ci && npm run export:web -w @fixam/pro
+    staticPublishPath: apps/pro/dist
+    envVars:
+      - key: EXPO_PUBLIC_API_URL
+        value: https://fixam-api.onrender.com/api/v1
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

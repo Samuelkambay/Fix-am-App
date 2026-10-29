@@ -1,0 +1,22 @@
+{
+  "name": "fixam-mobile",
+  "private": true,
+  "version": "1.0.0",
+  "description": "FixAm Salone mobile apps: FixAm (customer) and FixAm Pro (providers and servicemen)",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "flow-test": "npm run flow-test -w @fixam/shared",
+    "customer": "npm run start -w @fixam/customer",
+    "pro": "npm run start -w @fixam/pro",
+    "web:build": "npm run export:web -w @fixam/customer && npm run export:web -w @fixam/pro",
+    "web:serve": "node scripts/serve-web.js apps/customer/dist 8081 & node scripts/serve-web.js apps/pro/dist 8082",
+    "screenshots": "node scripts/screenshots.js"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3"
+  }
+}

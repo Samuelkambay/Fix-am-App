@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "FixAm Pro",
+    "slug": "fixam-pro",
+    "scheme": "fixampro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F4F6F3",
+    "primaryColor": "#123C69",
+    "android": { "package": "sl.fixam.pro", "softwareKeyboardLayoutMode": "pan" },
+    "ios": { "bundleIdentifier": "sl.fixam.pro", "supportsTablet": false },
+    "web": { "bundler": "metro", "output": "single", "name": "FixAm Pro", "themeColor": "#123C69", "backgroundColor": "#F4F6F3" },
+    "plugins": ["expo-router", "expo-secure-store", ["expo-location", {"locationWhenInUsePermission": "FixAm Pro uses your location to show jobs near you."}], ["expo-image-picker", {"photosPermission": "FixAm Pro needs your photos to upload badge documents.", "cameraPermission": "FixAm Pro uses the camera to photograph your ID and certificates."}], "expo-document-picker"],
+    "experiments": { "typedRoutes": false }
+  }
+}

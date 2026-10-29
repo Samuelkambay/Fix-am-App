@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "FixAm",
+    "slug": "fixam",
+    "scheme": "fixam",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F4F6F3",
+    "primaryColor": "#0B7A3E",
+    "android": { "package": "sl.fixam.app", "softwareKeyboardLayoutMode": "pan" },
+    "ios": { "bundleIdentifier": "sl.fixam.app", "supportsTablet": false },
+    "web": { "bundler": "metro", "output": "single", "name": "FixAm", "themeColor": "#0B7A3E", "backgroundColor": "#F4F6F3" },
+    "plugins": ["expo-router", "expo-secure-store", ["expo-location", {"locationWhenInUsePermission": "FixAm uses your location to find fixers in your area."}], ["expo-camera", {"cameraPermission": "FixAm uses the camera to scan a fixer's badge QR code."}]],
+    "experiments": { "typedRoutes": false }
+  }
+}
